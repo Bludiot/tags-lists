@@ -1,10 +1,12 @@
 {
-	"author": "Bludiot",
-	"email": "",
-	"website": "https://github.com/Bludiot/tags-lists",
-	"version": "1.0.0",
-	"releaseDate": "2023-07-15",
-	"license": "MIT",
-	"compatible": "3.15.0",
-	"notes": ""
+	"author"       : "Bludiot",
+	"email"        : "",
+	"website"      : "https://github.com/Bludiot/tags-lists",
+	"version"      : "1.0.0",
+	"releaseDate"  : "2023-07-15",
+	"license"      : "MIT",
+	"compatible"   : "3.16.0",
+	"notes"        : "",
+	"theme_desc"   : "The Tags Lists plugin improves upon the default Bludit tags plugin with many display options for the site sidebar. The active theme may also add tags to the 404 error page.",
+	"theme_compat" : [ "configureight" ]
 }
