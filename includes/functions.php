@@ -16,12 +16,104 @@ if ( ! defined( 'BLUDIT' ) ) {
 }
 
 /**
+ * Plugin instance
+ *
+ * @since  1.0.0
+ * @return object
+ */
+function plugin() {
+	return new \Tags_Lists;
+}
+
+/**
+ * Tags database
+ *
+ * @since  1.0.0
+ * @global object $tags The Tags class.
+ * @return mixed False if no tags in database.
+ */
+function tags_db() {
+
+	// Access global variables.
+	global $tags;
+
+	if ( 0 == count( $tags->db ) ) {
+		return false;
+	}
+	return $tags->getDB();
+}
+
+/**
+ * Get tags
+ *
+ * Gets all available tags.
+ *
+ * @param  string $get `key`, `key_name`, or `name`
+ * @return mixed False if no tags in database.
+ */
+function get_tags( $get = 'key' ) {
+
+	// False if no tags in the database.
+	if ( 0 == count_tags() ) {
+		return false;
+	}
+
+	$tags = [];
+	foreach ( tags_db() as $key => $cat ) {
+
+		if ( 'key_name' == $get ) {
+			$entry = [ $key => $cat['name'] ];
+			$tags  = array_merge( $tags, $entry );
+		} elseif ( 'name' == $get ) {
+			$tags[] = $cat['name'];
+		} else {
+			$tags[] = $key;
+		}
+	}
+	return $tags;
+}
+
+/**
+ * Count tags
+ *
+ * Total number of tags in the
+ * database, including those not used
+ * for any post.
+ *
+ * @since  1.0.0
+ * @return integer
+ */
+function count_tags() {
+	return count( tags_db() );
+}
+
+/**
+ * Get tags by post count
+ *
+ * @since  1.0.0
+ * @global object $tags The Tags class.
+ * @return array
+ */
+function tags_by_count() {
+
+	// Access global variables.
+	global $tags;
+
+	if ( 0 == count( $tags->db ) ) {
+		return false;
+	}
+	usort( $tags->db, function( $a, $b ) {
+		return count( $a['list'] ) < count( $b['list'] );
+	} );
+	return $tags->db;
+}
+
+/**
  * Tags list
  *
  * @since  1.0.0
  * @param  mixed $args Arguments to be passed.
  * @param  array $defaults Default arguments.
- * @global object $tags The Tags class.
  * @return string Returns the list markup.
  */
 function tags_list( $args = null, $defaults = [] ) {
@@ -81,18 +173,15 @@ function tags_list( $args = null, $defaults = [] ) {
 		$args['list_class']
 	);
 
-	// Alias categories database array.
-	$tags_db = $tags->db;
-
 	// Maybe sort by post count.
 	if ( 'count' == $args['sort_by'] ) {
-		usort( $tags_db, function( $a, $b ) {
+		usort( $tags->db, function( $a, $b ) {
 			return count( $a['list'] ) < count( $b['list'] );
 		} );
 	}
 
 	// By default the database of tags are alphanumeric sorted.
-	foreach ( $tags_db as $key => $fields ) {
+	foreach ( tags_db() as $key => $fields ) {
 
 		$get_count = count( $fields['list'] );
 		$get_name  = $fields['name'];
@@ -152,37 +241,80 @@ function sidebar_list() {
 	// Access global variables.
 	global $L;
 
-	// Get the plugin object.
-	$plugin = new \Tags_Lists;
-
-	// Override default function arguments.
-	$args = [
-		'wrap'       => true,
-		'wrap_class' => 'list-wrap tags-list-wrap-wrap plugin plugin-tags-list'
-	];
-
-	$args['label_el'] = $plugin->label_wrap();
-
-	if ( ! empty( $plugin->label() ) ) {
-		$args['label'] = $plugin->label();
+	$tags = tags_db();
+	if ( 'count' == plugin()->sort_by() ) {
+		$tags = tags_by_count();
 	}
 
-	if ( 'horz' == $plugin->list_view() ) {
-		$args['direction'] = 'horz';
+	// Label wrapping elements.
+	$get_open  = str_replace( ',', '><', plugin()->label_wrap() );
+	$get_close = str_replace( ',', '></', plugin()->label_wrap() );
+
+	$label_el_open  = "<{$get_open}>";
+	$label_el_close = "</{$get_close}>";
+
+	// List class.
+	$list_class = 'tags-list inline-taxonomy-list';
+	if ( 'vert' == plugin()->list_view() ) {
+		$list_class = 'tags-list standard-taxonomy-list';
 	}
 
-	if ( 'count' == $plugin->sort_by() ) {
-		$args['sort_by'] = 'count';
+	// List markup.
+	$html = '<div class="list-wrap tags-list-wrap-wrap plugin plugin-tags-list">';
+	if ( ! empty( plugin()->label() ) ) {
+		if ( plugin()->label_wrap() ) {
+			$html .= sprintf(
+				'%1$s%2$s%3$s',
+				$label_el_open,
+				plugin()->label(),
+				$label_el_close
+			);
+		} else {
+			$html .= plugin()->label();
+		}
 	}
+	$html .= sprintf(
+		'<ul class="%s">',
+		$list_class
+	);
 
-	if ( $plugin->post_count() ) {
-		$args['show_count'] = true;
+	// List entries.
+	foreach ( $tags as $key => $value ) {
+
+		if ( ! array_key_exists( 'name', $value ) ) {
+			continue;
+		}
+
+		$get_count = count( $value['list'] );
+		$get_name  = $value['name'];
+
+		// Font size by count.
+		$font_size = '1em';
+		if ( plugin()->count_size() ) {
+			if ( $get_count >= 21 ) {
+				$font_size = '1.3em';
+			} elseif ( $get_count >= 14 ) {
+				$font_size = '1.2em';
+			} elseif ( $get_count >= 7 ) {
+				$font_size = '1.1em';
+			}
+		}
+
+		$name = $get_name;
+		if ( plugin()->post_count() ) {
+			$name = sprintf(
+				'%s (%s)',
+				$get_name,
+				$get_count
+			);
+		}
+		$html .= sprintf(
+			"<li style='font-size:{$font_size};'><a href='%s'>%s</a></li>",
+			DOMAIN_TAGS . $key,
+			$name
+		);
 	}
+	$html .= '</ul></div>';
 
-	if ( $plugin->count_size() ) {
-		$args['count_size'] = true;
-	}
-
-	// Return a modified list.
-	return tags_list( $args );
+	return $html;
 }
