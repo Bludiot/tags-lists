@@ -109,7 +109,7 @@ $cats_page = DOMAIN_ADMIN . 'configure-plugin/Categories_Lists';
 					<option value="true" <?php echo ( $this->getValue( 'count_size' ) === true ? 'selected' : '' ); ?>><?php $L->p( 'Enabled' ); ?></option>
 					<option value="false" <?php echo ( $this->getValue( 'count_size' ) === false ? 'selected' : '' ); ?>><?php $L->p( 'Disabled' ); ?></option>
 				</select>
-				<small class="form-text text-muted"><?php $L->p( 'Increase font size by post count.' ); ?></small>
+				<small class="form-text text-muted"><?php $L->p( 'Increase font size by post count. Increases 7 or greater, 14 or greater, 21 or greater.' ); ?></small>
 			</div>
 		</div>
 	</div>
