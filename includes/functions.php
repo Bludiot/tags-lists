@@ -126,6 +126,7 @@ function tags_list( $args = null, $defaults = [] ) {
 		'wrap'       => false,
 		'wrap_class' => 'list-wrap tags-list-wrap',
 		'direction'  => 'horz', // horz or vert
+		'separator'  => false,
 		'list_class' => 'tags-list standard-taxonomy-list',
 		'label'      => false,
 		'label_el'   => 'h2',
@@ -151,6 +152,12 @@ function tags_list( $args = null, $defaults = [] ) {
 
 	$label_el_open  = "<{$get_open}>";
 	$label_el_close = "</{$get_close}>";
+
+	// Tags separator.
+	$sep = null;
+	if ( 'horz' == $args['direction'] && is_string( $args['separator'] ) ) {
+		$sep = $args['separator'];
+	}
 
 	// List markup.
 	$html = '';
@@ -191,6 +198,16 @@ function tags_list( $args = null, $defaults = [] ) {
 			continue;
 		}
 
+		/**
+		 * No separator after the last tag.
+		 * Needs PHP 7.3 or greater.
+		 */
+		if ( function_exists( 'array_key_last' ) ) {
+			if ( $key == array_key_last( tags_db() ) ) {
+				$sep = null;
+			}
+		}
+
 		// Font size by count.
 		$font_size = '1em';
 		if ( $args['count_size'] ) {
@@ -219,7 +236,7 @@ function tags_list( $args = null, $defaults = [] ) {
 		if ( $args['links'] ) {
 			$html .= '</a>';
 		}
-		$html .= '</li>';
+		$html .= '</li>' . $sep;
 	}
 	$html .= '</ul>';
 
@@ -259,6 +276,12 @@ function sidebar_list() {
 		$list_class = 'tags-list standard-taxonomy-list';
 	}
 
+	// Tags separator.
+	$sep = null;
+	if ( 'horz' == plugin()->list_view() && plugin()->separator() ) {
+		$sep = ' | ';
+	}
+
 	// List markup.
 	$html = '<div class="list-wrap tags-list-wrap-wrap plugin plugin-tags-list">';
 	if ( ! empty( plugin()->label() ) ) {
@@ -288,6 +311,16 @@ function sidebar_list() {
 		$get_count = count( $value['list'] );
 		$get_name  = $value['name'];
 
+		/**
+		 * No separator after the last tag.
+		 * Needs PHP 7.3 or greater.
+		 */
+		if ( function_exists( 'array_key_last' ) ) {
+			if ( $key == array_key_last( $tags ) ) {
+				$sep = null;
+			}
+		}
+
 		// Font size by count.
 		$font_size = '1em';
 		if ( plugin()->count_size() ) {
@@ -309,9 +342,10 @@ function sidebar_list() {
 			);
 		}
 		$html .= sprintf(
-			"<li style='font-size:{$font_size};'><a href='%s'>%s</a></li>",
+			"<li style='font-size:{$font_size};'><a href='%s'>%s</a></li>%s",
 			DOMAIN_TAGS . $key,
-			$name
+			$name,
+			$sep
 		);
 	}
 	$html .= '</ul></div>';

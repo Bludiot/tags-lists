@@ -36,7 +36,7 @@ $cats_page = DOMAIN_ADMIN . 'configure-plugin/Categories_Lists';
 	<div class="form-field form-group row">
 		<label class="form-label col-sm-2 col-form-label" for="in_sidebar"><?php echo ucwords( $L->get( 'Sidebar List' ) ); ?></label>
 		<div class="col-sm-10">
-			<select class="form-select" id="in_sidebar" name="in_sidebar">
+			<select id="in_sidebar" class="form-select" name="in_sidebar">
 				<option value="true" <?php echo ( $this->getValue( 'in_sidebar' ) === true ? 'selected' : '' ); ?>><?php $L->p( 'Enabled' ); ?></option>
 
 				<option value="false" <?php echo ( $this->getValue( 'in_sidebar' ) === false ? 'selected' : '' ); ?>><?php $L->p( 'Disabled' ); ?></option>
@@ -72,7 +72,7 @@ $cats_page = DOMAIN_ADMIN . 'configure-plugin/Categories_Lists';
 		<div class="form-field form-group row">
 			<label class="form-label col-sm-2 col-form-label" for="sort_by"><?php $L->p( 'Sort Order' ); ?></label>
 			<div class="col-sm-10">
-				<select class="form-select" name="sort_by">
+				<select id="sort_by" class="form-select" name="sort_by">
 					<option value="abc" <?php echo ( $this->getValue( 'sort_by' ) === 'abc' ? 'selected' : '' ); ?>><?php $L->p( 'Alphabetically' ); ?></option>
 					<option value="count" <?php echo ( $this->getValue( 'sort_by' ) === 'count' ? 'selected' : '' ); ?>><?php $L->p( 'Post Count' ); ?></option>
 				</select>
@@ -83,7 +83,7 @@ $cats_page = DOMAIN_ADMIN . 'configure-plugin/Categories_Lists';
 		<div class="form-field form-group row">
 			<label class="form-label col-sm-2 col-form-label" for="post_count"><?php $L->p( 'Post Count' ); ?></label>
 			<div class="col-sm-10">
-				<select class="form-select" name="post_count">
+				<select id="post_count" class="form-select" name="post_count">
 					<option value="true" <?php echo ( $this->getValue( 'post_count' ) === true ? 'selected' : '' ); ?>><?php $L->p( 'Enabled' ); ?></option>
 					<option value="false" <?php echo ( $this->getValue( 'post_count' ) === false ? 'selected' : '' ); ?>><?php $L->p( 'Disabled' ); ?></option>
 				</select>
@@ -94,7 +94,7 @@ $cats_page = DOMAIN_ADMIN . 'configure-plugin/Categories_Lists';
 		<div class="form-field form-group row">
 			<label class="form-label col-sm-2 col-form-label" for="list_view"><?php $L->p( 'List Direction' ); ?></label>
 			<div class="col-sm-10">
-				<select class="form-select" name="list_view">
+				<select id="list_view" class="form-select" name="list_view">
 					<option value="vert" <?php echo ( $this->getValue( 'list_view' ) === 'vert' ? 'selected' : '' ); ?>><?php $L->p( 'Vertical' ); ?></option>
 					<option value="horz" <?php echo ( $this->getValue( 'list_view' ) === 'horz' ? 'selected' : '' ); ?>><?php $L->p( 'Horizontal' ); ?></option>
 				</select>
@@ -102,12 +102,25 @@ $cats_page = DOMAIN_ADMIN . 'configure-plugin/Categories_Lists';
 			</div>
 		</div>
 
+		<div id="separator-wrap" class="form-field form-group row" style="display: <?php echo ( $this->getValue( 'list_view' ) === 'horz' ? 'flex' : 'none' ); ?>;">
+			<label class="form-label col-sm-2 col-form-label" for="separator"><?php echo ucwords( $L->get( 'Tags Separator' ) ); ?></label>
+			<div class="col-sm-10">
+				<select id="separator" class="form-select" name="separator">
+					<option value="false" <?php echo ( $this->getValue( 'separator' ) === false ? 'selected' : '' ); ?>><?php $L->p( 'Disabled' ); ?></option>
+
+					<option value="true" <?php echo ( $this->getValue( 'separator' ) === true ? 'selected' : '' ); ?>><?php $L->p( 'Enabled' ); ?></option>
+				</select>
+				<small class="form-text"><?php $L->p( 'Separate tags with a pipe ( | ) character in the horizontal list.' ); ?></small>
+			</div>
+		</div>
+
 		<div class="form-field form-group row">
 			<label class="form-label col-sm-2 col-form-label" for="count_size"><?php $L->p( 'Font Size' ); ?></label>
 			<div class="col-sm-10">
-				<select class="form-select" name="count_size">
-					<option value="true" <?php echo ( $this->getValue( 'count_size' ) === true ? 'selected' : '' ); ?>><?php $L->p( 'Enabled' ); ?></option>
+				<select id="count_size" class="form-select" name="count_size">
 					<option value="false" <?php echo ( $this->getValue( 'count_size' ) === false ? 'selected' : '' ); ?>><?php $L->p( 'Disabled' ); ?></option>
+
+					<option value="true" <?php echo ( $this->getValue( 'count_size' ) === true ? 'selected' : '' ); ?>><?php $L->p( 'Enabled' ); ?></option>
 				</select>
 				<small class="form-text text-muted"><?php $L->p( 'Increase font size by post count. Increases 7 or greater, 14 or greater, 21 or greater.' ); ?></small>
 			</div>
@@ -123,6 +136,14 @@ jQuery(document).ready( function($) {
 			$( "#tags-lists-options" ).fadeIn( 250 );
 		} else if ( show == 'false' ) {
 			$( "#tags-lists-options" ).fadeOut( 250 );
+		}
+	});
+	$( '#list_view' ).on( 'change', function() {
+		var show = $(this).val();
+		if ( show == 'horz' ) {
+			$( "#separator-wrap" ).css( 'display', 'flex' );
+		} else {
+			$( "#separator-wrap" ).css( 'display', 'none' );
 		}
 	});
 });

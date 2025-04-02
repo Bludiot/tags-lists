@@ -90,6 +90,7 @@ class Tags_Lists extends Plugin {
 			'sort_by'    => 'abc',
 			'post_count' => true,
 			'list_view'  => 'horz',
+			'separator'  => false,
 			'count_size' => false
 		];
 
@@ -211,6 +212,11 @@ class Tags_Lists extends Plugin {
 	// @return string
 	public function list_view() {
 		return $this->getValue( 'list_view' );
+	}
+
+	// @return boolean
+	public function separator() {
+		return $this->getValue( 'separator' );
 	}
 
 	// @return boolean
