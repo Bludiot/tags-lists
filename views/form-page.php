@@ -9,10 +9,7 @@
  */
 
 // Guide page URL.
-$guide_page = DOMAIN_ADMIN . 'plugin/Tags_Lists';
-
-// Categories page URL.
-$cats_page = DOMAIN_ADMIN . 'configure-plugin/Categories_Lists';
+$guide_page = DOMAIN_ADMIN . 'plugin/' . $this->className();
 
 ?>
 <style>
@@ -27,7 +24,7 @@ $cats_page = DOMAIN_ADMIN . 'configure-plugin/Categories_Lists';
 }
 </style>
 <div class="alert alert-primary alert-tags-lists" role="alert">
-	<p class="m-0"><?php $L->p( "Go to the <a href='{$guide_page}'>tags lists guide</a> page." ); if ( getPlugin( 'Categories_Lists' ) ) { echo ' '; $L->p( "Go to the <a href='{$cats_page}'>categories settings</a> page." ); } ?></p>
+	<p class="m-0"><?php $L->p( "Go to the <a href='{$guide_page}'>tags lists guide</a> page." ); ?></p>
 </div>
 
 <fieldset class="mt-4">
