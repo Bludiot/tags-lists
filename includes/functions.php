@@ -126,7 +126,7 @@ function tags_list( $args = null, $defaults = [] ) {
 		'wrap'       => false,
 		'wrap_class' => 'list-wrap tags-list-wrap',
 		'direction'  => 'horz', // horz or vert
-		'separator'  => false,
+		'separator'  => false, // false or string
 		'list_class' => 'tags-list standard-taxonomy-list',
 		'label'      => false,
 		'label_el'   => 'h2',
