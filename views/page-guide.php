@@ -47,6 +47,7 @@ $defaults = [
 	'wrap'       => false,
 	'wrap_class' => 'list-wrap tags-list-wrap',
 	'direction'  => 'vert', // horz or vert
+	'separator'  => false, // false or string
 	'list_class' => 'tags-list standard-taxonomy-list',
 	'label'      => false,
 	'label_el'   => 'h2',
