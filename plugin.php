@@ -94,6 +94,11 @@ class Tags_Lists extends Plugin {
 			'count_size' => false
 		];
 
+		// Array of custom hooks.
+		$this->customHooks = [
+			'tags_list'
+		];
+
 		if ( ! $this->installed() ) {
 			$Tmp = new dbJSON( $this->filenameDb );
 			$this->db = $Tmp->db;
@@ -222,5 +227,19 @@ class Tags_Lists extends Plugin {
 	// @return boolean
 	public function count_size() {
 		return $this->getValue( 'count_size' );
+	}
+
+	/**
+	 * Custom hook
+	 *
+	 * Prints the sidebar default list by
+	 * calling the `tags_list' hook.
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @return string Returns the form markup.
+	 */
+	public function tags_list() {
+		return sidebar_list();
 	}
 }
