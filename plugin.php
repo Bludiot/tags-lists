@@ -130,6 +130,22 @@ class Tags_Lists extends Plugin {
 	}
 
 	/**
+	 * Admin controller
+	 *
+	 * Change the text of the `<title>` tag.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @global object $L The Language class.
+	 * @global array $layout
+	 * @return string Returns the head content.
+	 */
+	public function adminController() {
+		global $L, $layout, $site;
+		$layout['title'] = $L->get( 'Tags Lists Guide' ) . ' | ' . $site->title();
+	}
+
+	/**
 	 * Admin info pages
 	 *
 	 * @since  1.0.0
