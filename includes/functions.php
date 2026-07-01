@@ -263,6 +263,11 @@ function sidebar_list() {
 		$tags = tags_by_count();
 	}
 
+	// No list if no tags.
+	if ( ! is_array( $tags ) ) {
+		return;
+	}
+
 	// Label wrapping elements.
 	$get_open  = str_replace( ',', '><', plugin()->label_wrap() );
 	$get_close = str_replace( ',', '></', plugin()->label_wrap() );
